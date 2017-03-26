@@ -4,7 +4,7 @@ setup(
     name='lazydir',
     version=0.1,
     author='Alex Peitsinis',
-    packages=find_packages(),
+    py_modules=['lazydir'],
     entry_points={
         'console_scripts': [
             'lazydir = lazydir:main'
