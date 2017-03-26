@@ -1,16 +1,21 @@
 import os
+import sys
 import unittest
 try:
     import unittest.mock as mock
 except ImportError:
-    import mock
+    try:
+        import mock
+    except ImportError:
+        pass
 
 from lazydir import load_json, load_yaml, get_config, FT_MAP, ext
 from lazydir import ConfigurationError
 
-THIS_FILE = __file__
+HAS_MOCK = 'mock' in sys.modules
 
 
+@unittest.skipIf(not HAS_MOCK, '`mock` module not found')
 class TestExtensions(unittest.TestCase):
 
     TEST_FILENAME = 'path/to/file.test'
