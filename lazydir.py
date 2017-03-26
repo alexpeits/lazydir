@@ -64,11 +64,27 @@ def get_config(config_path):
     return FT_MAP[config_ext](config_path)
 
 
-def check_and_create(config):
-    pass
+def _create_all(config, target):
+    for k, v in config.items():
+        path = os.path.join(target, k)
+        os.mkdir(path)
+        if v is None:
+            continue
+        _create_all(path, v)
 
 
-def main():
+def check_and_create(config, target):
+    for k, v in config.items():
+        path = os.path.join(target, k)
+        if not os.path.exists(path):
+            os.mkdir(path)
+            if v is not None:
+                _create_all(path, v)
+        elif v is not None:
+            check_and_create(path, v)
+
+
+def _main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-t', '--target',
@@ -82,15 +98,20 @@ def main():
     )
     args = parser.parse_args()
 
-    try:
-        config = get_config(args.config)
-    except ConfigurationError as e:
-        print(e, file=sys.stderr)
-        sys.exit(1)
+    config = get_config(args.config)
 
+    if not os.path.exists(args.target):
+        raise ConfigurationError(
+            'Target path does not exist: {}'.format(args.target)
+        )
+
+    check_and_create(config, args.target)
+
+
+def main():
     try:
-        check_and_create(config)
-    except LazydirError as e:
+        _main()
+    except (ConfigurationError, LazydirError) as e:
         print(e, file=sys.stderr)
         sys.exit(1)
 
