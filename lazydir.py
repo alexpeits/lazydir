@@ -70,7 +70,7 @@ def _create_all(config, target):
         os.mkdir(path)
         if v is None:
             continue
-        _create_all(path, v)
+        _create_all(v, path)
 
 
 def check_and_create(config, target):
@@ -79,9 +79,9 @@ def check_and_create(config, target):
         if not os.path.exists(path):
             os.mkdir(path)
             if v is not None:
-                _create_all(path, v)
+                _create_all(v, path)
         elif v is not None:
-            check_and_create(path, v)
+            check_and_create(v, path)
 
 
 def _main():
