@@ -48,6 +48,14 @@ def load_yaml(config_path):
         return yaml.load(f)
 
 
+def touch(path):
+    """UNIX `touch` implementation."""
+    if os.path.exists(path):
+        os.utime(path, None)
+    else:
+        open(path, 'a').close()
+
+
 def get_config(config_path):
     if not os.path.exists(config_path):
         raise ConfigurationError('Path does not exist: {}'.format(config_path))
